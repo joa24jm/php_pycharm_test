@@ -3,7 +3,8 @@ import sys
 from sshtunnel import SSHTunnelForwarder
 import pandas as pd
 from datetime import date
-# import MySQLdb
+from DBConnection import dbConnection as dbc
+
 
 def connect_to_db(user='jallgaierch', pw='P31bmiSIFeNrFyNI', host='127.0.0.1', port=3306, database='tinnitustyt17012022'):
     """
@@ -68,32 +69,28 @@ def connect_to_db(user='jallgaierch', pw='P31bmiSIFeNrFyNI', host='127.0.0.1', p
 
 if __name__ == '__main__':
 
-    # establish connection
-    connection = connect_to_db(user='jallgaierch',
-                               pw='P31bmiSIFeNrFyNI',
-                               host='127.0.0.1',
-                               port=3306,
-                               database='tinnitustyt17012022')
-    # get cursor
-    cur = connection.cursor()
+    print('main executed')
 
-    # define statements
-    # sql = "SELECT * from standardanswers LEFT JOIN (SELECT id FROM users) as user_ids ON standardanswers.user_id = user_ids.id"
-    sql = "SELECT * from answers LEFT JOIN (SELECT id from users) as user_ids ON answers.user_id = user_ids.id"
+    dbc.open_ssh_tunnel()
+    dbc.mysql_connect()
 
-    # execute sql statement (returns None)
-    cur.execute(sql)
-    # fetch sql statement
-    df = pd.DataFrame(cur.fetchall(), columns=[i[0] for i in cur.description])
+    # Test 1
+    users = dbc.run_query("SELECT * FROM users")
+    print('users.head():', '\t', users.head())
+
+    # Test 2
+    userCount = dbc.run_query("SELECT COUNT(*) FROM users")
+    print('userCount: ', '\t', userCount)
+
+    dbc.mysql_disconnect()
+    dbc.close_ssh_tunnel()
+
     # drop unknown user_ids
-    df.dropna(axis='rows', subset=['user_id'], inplace=True)
+    users.dropna(axis='rows', subset=['id'], inplace=True)
     # save dataframe to dir
     tday = date.today().strftime("%y-%m-%d")
     tday = "22-01-17" # database is just a view from that date
-    # df.to_csv(f'results/dataframes/tyt/{tday}_standardanswers.csv')
-
-    # Close connection
-    connection.close()
+    # users.to_csv(f'results/dataframes/tyt/{tday}_users.csv')
 
 
 

@@ -1,5 +1,5 @@
 .idea/
-results/dataframes/tyt/
+*csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
