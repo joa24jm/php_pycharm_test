@@ -27,17 +27,15 @@ localhost = os.environ.get('localhost')
 ################################################################
 # Uncomment (out)
 ################################################################
-"""
-print('================================')
-print('ssh_host', '\t\t', ssh_host)
-print('ssh_username', '\t\t', ssh_username)
-print('ssh_password', '\t\t', ssh_password)
-print('database_username', '\t', database_username)
-print('database_password', '\t', database_password)
-print('database_name', '\t\t', database_name)
-print('localhost', '\t\t', localhost)
-print('================================')
-"""
+# print('================================')
+# print('ssh_host', '\t\t', ssh_host)
+# print('ssh_username', '\t\t', ssh_username)
+# print('ssh_password', '\t\t', ssh_password)
+# print('database_username', '\t', database_username)
+# print('database_password', '\t', database_password)
+# print('database_name', '\t\t', database_name)
+# print('localhost', '\t\t', localhost)
+# print('================================')
 ################################################################
 
 ################################################################
@@ -102,21 +100,24 @@ def close_ssh_tunnel():
   
   tunnel.close
 
-def main():
+def run(queries=[]):
+  ...
 
+def run(query):
   open_ssh_tunnel()
   mysql_connect()
 
-  # Test 1
-  users = run_query("SELECT * FROM users")
-  print('users.head():', '\t', users.head())
-
-  # Test 2
-  userCount = run_query("SELECT COUNT(*) FROM users")
-  print('userCount: ', '\t', userCount)
+  result = run_query(query)
 
   mysql_disconnect()
   close_ssh_tunnel()
 
-if __name__=='__main__':
-  main()
+  return result
+
+# # Test 1
+# users = run_query("SELECT * FROM users")
+# print('users.head():', '\t', users.head())
+
+# # Test 2
+# userCount = run_query("SELECT COUNT(*) FROM users")
+# print('userCount: ', '\t', userCount)
