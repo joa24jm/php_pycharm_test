@@ -101,7 +101,7 @@ def close_ssh_tunnel():
   tunnel.close
 
 def run(queries=[]):
-  ...
+  pass
 
 def run(query):
   open_ssh_tunnel()
@@ -114,10 +114,15 @@ def run(query):
 
   return result
 
-# # Test 1
-# users = run_query("SELECT * FROM users")
-# print('users.head():', '\t', users.head())
+def main():
 
-# # Test 2
-# userCount = run_query("SELECT COUNT(*) FROM users")
-# print('userCount: ', '\t', userCount)
+  # Test 1
+  users = run_query("SELECT * FROM users")
+  print('users.head():', '\t', users.head())
+
+  # # Test 2
+  userCount = run_query("SELECT COUNT(*) FROM users")
+  print('userCount: ', '\t', userCount)
+
+if '__name__'=='__main__':
+  main()
