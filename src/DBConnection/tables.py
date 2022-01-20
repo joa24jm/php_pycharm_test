@@ -19,12 +19,17 @@ def get_all_answers():
 
   return result
 
-# users = get_all_users()
-# print('users - BEGIN')
-# print('users.head():', '\t', users.head())
-# print('users - END')
+def main():
 
-# answers = get_all_answers()
-# print('answers - BEGIN')
-# print('answers.head():', '\t', answers.head())
-# print('answers - END')
+  users = get_all_users()
+  print('users - BEGIN')
+  print('users.head():', '\t', users.head())
+  print('users - END')
+
+  answers = get_all_answers()
+  print('answers - BEGIN')
+  print('answers.head():', '\t', answers.head())
+  print('answers - END')
+
+if '__name__'=='__main__':
+  main()
