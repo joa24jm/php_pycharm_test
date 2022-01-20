@@ -25,7 +25,9 @@ def get_all_tables():
   return {
     'users': get_all_users(),
     'questionnaires': get_all_questionnaires(),
+    'answers': get_all_questions(),
     'answers': get_all_answers(),
+    'answers': get_all_standardanswers(),
   }
 
 # def test():
