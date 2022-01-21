@@ -1,35 +1,45 @@
 import dbConnection
 
-# answers, standard answers, users, questionnaires, ...
-
-def test():
-  dbConnection.run(queries=[])
+sql_query_users = 'SELECT * FROM users'
+sql_query_questionnaires = 'SELECT * FROM questionnaires'
+sql_query_questions = 'SELECT * FROM questions'
+sql_query_answers = 'SELECT * FROM answers'
+sql_query_standardanswers = 'SELECT * FROM standardanswers'
 
 def get_all_users():
-  sql_query = "SELECT * FROM users"
+  return dbConnection.run(sql_query_users)
 
-  result = dbConnection.run(sql_query)
+def get_all_questionnaires():
+  return dbConnection.run(sql_query_questionnaires)
 
-  return result
+def get_all_questions():
+  return dbConnection.run(sql_query_questions)
 
 def get_all_answers():
-  sql_query = "SELECT * FROM answers"
+  return dbConnection.run(sql_query_answers)
 
-  result = dbConnection.run(sql_query)
+def get_all_standardanswers():
+  return dbConnection.run(sql_query_standardanswers)
 
-  return result
+def get_all_tables():
+  return {
+    'users': get_all_users(),
+    'questionnaires': get_all_questionnaires(),
+    'answers': get_all_questions(),
+    'answers': get_all_answers(),
+    'answers': get_all_standardanswers(),
+  }
+
+# def test():
+#   dbConnection.run(queries=[])
 
 def main():
+  print('GO')
+  for key, value in get_all_tables().items():
+    print(key + '.head() - BEGIN')
+    print(value.head())
+    print(key + '.head() - END')
+  print('FINISH')
 
-  users = get_all_users()
-  print('users - BEGIN')
-  print('users.head():', '\t', users.head())
-  print('users - END')
-
-  answers = get_all_answers()
-  print('answers - BEGIN')
-  print('answers.head():', '\t', answers.head())
-  print('answers - END')
-
-if '__name__'=='__main__':
+if __name__ == '__main__':
   main()
