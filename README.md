@@ -19,4 +19,14 @@ database_password = ???
 database_name = ???
 localhost = ???
 ```
+
+## Techstack-Idee
+1. .csv-raw einlesen und mit Pandas aggregieren
+2. Aggregierte Werte in [HTML template](https://getbootstrap.com/docs/5.1/examples/) einbauen
+3. Fertige HTML Datei lokal mit Datum und Projekt speichern
+4. Upload einer HTML Datei mit FTP -  [File Transfer Protocol](https://docs.python.org/3/library/ftplib.html)
+
+SideNotes:
+- Rüdiger muss Server bereitstellen, der die HTML Datei hostet
+
 ## TYT Dashboard
