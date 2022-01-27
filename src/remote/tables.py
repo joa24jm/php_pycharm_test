@@ -1,7 +1,7 @@
 # import sys
 # import os
 # sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import db_connection as dbc
+from remote import db_connection as dbc
 
 sql_query_users = 'SELECT * FROM users'
 sql_query_questionnaires = 'SELECT * FROM questionnaires'

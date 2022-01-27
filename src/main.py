@@ -4,6 +4,7 @@ from sshtunnel import SSHTunnelForwarder
 import pandas as pd
 from datetime import date
 # from db_connection import db_connection as dbc
+# sys.path.append("./remote")
 from remote import db_connection as dbc
 from remote import tables
 from pathlib import Path
