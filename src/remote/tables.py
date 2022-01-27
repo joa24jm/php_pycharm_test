@@ -1,3 +1,6 @@
+# import sys
+# import os
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import db_connection as dbc
 
 sql_query_users = 'SELECT * FROM users'
@@ -24,10 +27,10 @@ def get_all_standardanswers():
 def get_all_tables():
   return {
     'users': get_all_users(),
-    'questionnaires': get_all_questionnaires(),
-    'answers': get_all_questions(),
-    'answers': get_all_answers(),
-    'answers': get_all_standardanswers(),
+    # 'questionnaires': get_all_questionnaires(),
+    # 'answers': get_all_questions(),
+    # 'answers': get_all_answers(),
+    # 'answers': get_all_standardanswers(),
   }
 
 # def test():
