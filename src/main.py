@@ -1,20 +1,13 @@
-import sys
-from sshtunnel import SSHTunnelForwarder
-import pandas as pd
 from datetime import date
-from remote import db_connection as dbc
 from remote import tables
 from pathlib import Path
 
 if __name__ == '__main__':
   print('main executed')
 
-  users = tables.get_all_users()
-  print('users.head():', '\t', users.head())
+  # get all tables, this takes a while
+  tabs = tables.get_all_tables()
 
-  # drop unknown user_ids
-  users.dropna(axis='rows', subset=['id'], inplace=True)
-  
   # save dataframe to dir
   tday = date.today().strftime("%y-%m-%d")
   tday = "22-01-17" # database is just a view from that date
@@ -22,4 +15,7 @@ if __name__ == '__main__':
   # write date to CSV file
   path = 'results/dataframes/tyt'
   Path(path).mkdir(parents=True, exist_ok=True)
-  users.to_csv(f'{path}/{tday}_users.csv')
+
+  # safe all tables to disk
+  for key in tabs.keys():
+    tabs[key].to_csv(f'{path}/{tday}_{key}.csv')
