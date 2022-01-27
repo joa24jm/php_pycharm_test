@@ -1,3 +1,12 @@
+__author__ = 'CV'
+__copyright__ = 'Copyright 2022, TYH Dasgboard Project'
+__credits__ = ['CV', 'JA']
+__license__ = 'GPL'
+__version__ = '0.0.1'
+__maintainer__ = 'CV'
+__email__ = '???'
+__status__ = 'Development'
+
 if __name__ == '__main__':
   import db_connection as dbc
 else:
@@ -27,10 +36,10 @@ def get_all_standardanswers():
 def get_all_tables():
   return {
     'users': get_all_users(),
-    # 'questionnaires': get_all_questionnaires(),
-    # 'questions': get_all_questions(),
-    # 'answers': get_all_answers(),
-    # 'standardanswers': get_all_standardanswers(),
+    'questionnaires': get_all_questionnaires(),
+    'questions': get_all_questions(),
+    'answers': get_all_answers(),
+    'standardanswers': get_all_standardanswers(),
   }
 
 # def test():
@@ -42,6 +51,16 @@ def main():
     print(key + '.head() - BEGIN')
     print(value.head())
     print(key + '.head() - END')
+
+  tables = dbc.run_multiple({
+    'users' : sql_query_users,
+    'questionnaires' : sql_query_questionnaires,
+    'questions' : sql_query_questions,
+    'answers' : sql_query_answers,
+    'answers' : sql_query_answers
+  })
+  print(dict(map(lambda item: (item[0], item[1].head()), tables.items())))
+
   print('FINISH')
 
 if __name__ == '__main__':

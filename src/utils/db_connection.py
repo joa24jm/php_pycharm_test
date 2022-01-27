@@ -1,13 +1,18 @@
-__author__ = "CV"
-__version__ = "1.0"
-__maintainer__ = "CV"
-__status__ = "Test"
+__author__ = 'CV'
+__copyright__ = 'Copyright 2022, TYH Dasgboard Project'
+__credits__ = ['CV', 'JA']
+__license__ = 'GPL'
+__version__ = '0.0.1'
+__maintainer__ = 'CV'
+__email__ = '???'
+__status__ = 'Development'
 
 import os
-from dotenv import load_dotenv
-import pandas as pd
-import pymysql
 import logging
+from unittest import result
+from dotenv import load_dotenv
+import pymysql
+import pandas as pd
 import sshtunnel
 from sshtunnel import SSHTunnelForwarder
 
@@ -100,8 +105,19 @@ def close_ssh_tunnel():
   
   tunnel.close
 
-def run(queries=[]):
-  pass
+def run_multiple(queries):
+  open_ssh_tunnel()
+  mysql_connect()
+
+  result = {}
+
+  for query_name, query in queries.items():
+    result[query_name] = run_query(query)
+
+  mysql_disconnect()
+  close_ssh_tunnel()
+
+  return result
 
 def run(query):
   open_ssh_tunnel()
@@ -114,15 +130,29 @@ def run(query):
 
   return result
 
-def main():
+################################################################
+# main
+################################################################
 
-  # Test 1
-  users = run_query("SELECT * FROM users")
+def main():
+  # Get head of users
+  users_query = 'SELECT * FROM users'
+  users = run(users_query)
   print('users.head():', '\t', users.head())
 
-  # # Test 2
-  userCount = run_query("SELECT COUNT(*) FROM users")
-  print('userCount: ', '\t', userCount)
+  # Get the user count
+  users_count_query = 'SELECT COUNT(*) FROM users'
+  userCount = run(users_count_query)
+  print('User count: ', '\t', userCount.values[0][0])
 
-if '__name__'=='__main__':
+  # Run multiple queries in the same connection and return the head
+  questionnaires_query = 'SELECT * FROM questionnaires'
+  queries = {
+    'users': users_query,
+    'questionnaires': questionnaires_query
+  }
+  results = run_multiple(queries)
+  print(dict(map(lambda item: (item[0], item[1].head()), results.items())))
+
+if __name__ == '__main__':
   main()
