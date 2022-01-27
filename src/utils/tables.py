@@ -1,7 +1,7 @@
-# import sys
-# import os
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from remote import db_connection as dbc
+if __name__ == '__main__':
+  import db_connection as dbc
+else:
+  from . import db_connection as dbc
 
 sql_query_users = 'SELECT * FROM users'
 sql_query_questionnaires = 'SELECT * FROM questionnaires'
@@ -27,10 +27,10 @@ def get_all_standardanswers():
 def get_all_tables():
   return {
     'users': get_all_users(),
-    'questionnaires': get_all_questionnaires(),
-    'questions': get_all_questions(),
-    'answers': get_all_answers(),
-    'standardanswers': get_all_standardanswers(),
+    # 'questionnaires': get_all_questionnaires(),
+    # 'questions': get_all_questions(),
+    # 'answers': get_all_answers(),
+    # 'standardanswers': get_all_standardanswers(),
   }
 
 # def test():

@@ -1,6 +1,6 @@
 from datetime import date
-from remote import tables
 from pathlib import Path
+from utils import tables
 
 if __name__ == '__main__':
   print('main executed')
