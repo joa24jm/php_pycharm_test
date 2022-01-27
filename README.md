@@ -1,16 +1,13 @@
 # Interactive Dashboards with App live data
 
-The ultimate goal of this project is to get a pipeline that requests live data from the server, aggregates it and pushes the results on a website / git repo / app so that the users and interested people can always have a look on the live data.
-As the connection to a frozen view of the TYT database is already established, we start with the TYT project.
+The ultimate goal of this project is to get a pipeline that requests live data from the server, aggregates it and pushes the results to a website / git repo / app so that the users and interested people can always have a look on the live data.
+As the connection to a frozen view of the *TYT* database is already established, we start with the *TYT* project.
 
-## Create a connection to a database
+## Setup
 
-In `src/DBConnection` there is a `.env` file that contains the credentials to the database you want to connect to.
-You need to fill in there your credentials and add the file to `.gitignore` to keep your credentials private.
+To connect to the remote database via ssh tunnel create a `.env` file in the same directory as the `db_connection.py` python script ([./src/utils](./src/utils)).
 
-### Setup
-
-Create a `.env` file (no filename, just the extension) in the same directory as the python script `dbConnection.py`.
+The resulting file (`./src/utils/.env`) must have the following content:
 
 ```txt
 ssh_host = ???
@@ -21,6 +18,10 @@ database_password = ???
 database_name = ???
 localhost = ???
 ```
+
+You need to replace the `???` with the appropriate credentials and information to establish a database connection.
+
+**Note that `.env` files are excluded from *Git* via the `.gitignore` ([.gitignore](./.gitignore)) to keep the credentials private.**
 
 ## Techstack-Idee
 

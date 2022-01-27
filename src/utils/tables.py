@@ -42,9 +42,6 @@ def get_all_tables():
     'standardanswers': get_all_standardanswers(),
   }
 
-# def test():
-#   dbConnection.run(queries=[])
-
 def main():
   print('GO')
   for key, value in get_all_tables().items():
