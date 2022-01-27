@@ -1,4 +1,4 @@
-import dbConnection
+import db_connection as dbc
 
 sql_query_users = 'SELECT * FROM users'
 sql_query_questionnaires = 'SELECT * FROM questionnaires'
@@ -7,19 +7,19 @@ sql_query_answers = 'SELECT * FROM answers'
 sql_query_standardanswers = 'SELECT * FROM standardanswers'
 
 def get_all_users():
-  return dbConnection.run(sql_query_users)
+  return dbc.run(sql_query_users)
 
 def get_all_questionnaires():
-  return dbConnection.run(sql_query_questionnaires)
+  return dbc.run(sql_query_questionnaires)
 
 def get_all_questions():
-  return dbConnection.run(sql_query_questions)
+  return dbc.run(sql_query_questions)
 
 def get_all_answers():
-  return dbConnection.run(sql_query_answers)
+  return dbc.run(sql_query_answers)
 
 def get_all_standardanswers():
-  return dbConnection.run(sql_query_standardanswers)
+  return dbc.run(sql_query_standardanswers)
 
 def get_all_tables():
   return {

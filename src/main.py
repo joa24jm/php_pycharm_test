@@ -3,7 +3,7 @@ import sys
 from sshtunnel import SSHTunnelForwarder
 import pandas as pd
 from datetime import date
-from DBConnection import dbConnection as dbc
+from db_connection import db_connection as dbc
 
 
 def connect_to_db(user='jallgaierch', pw='P31bmiSIFeNrFyNI', host='127.0.0.1', port=3306, database='tinnitustyt17012022'):
