@@ -1,35 +1,17 @@
-// ================================================================
-// Basic Chart.js example [START]
-// ================================================================
-const labels = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-];
-
-const data = {
-  labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgb(255, 99, 132)',
-    borderColor: 'rgb(255, 99, 132)',
-    data: [0, 10, 5, 2, 20, 30, 45],
-  }]
+var getJSON = function(url, callback) {
+  console.log('Loading JSON ...');
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'json';
+  xhr.onload = function() {
+    var status = xhr.status;
+    if (status === 200) {
+      console.log('... success! Status ' + status);
+      callback(null, xhr.response);
+    } else {
+      console.log('... error! Status ' + status);
+      callback(status, xhr.response);
+    }
+  };
+  xhr.send();
 };
-
-const config = {
-  type: 'line',
-  data: data,
-  options: {}
-};
-
-const myChart = new Chart(
-  document.getElementById('myChart'),
-  config
-);
-// ================================================================
-// Basic Chart.js example [END]
-// ================================================================

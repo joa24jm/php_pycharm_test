@@ -43,3 +43,7 @@ Run from project root folder.
 ```bash
 npx http-server ./www --cors=capacitor://localhost --cors=http://localhost -c-1
 ```
+
+## Chart.js
+
+[Getting Started](https://www.chartjs.org/docs/latest/getting-started/)
