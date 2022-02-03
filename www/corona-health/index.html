@@ -1,0 +1,106 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Track Your Tinnitus</title>
+  <meta name="description" content="A Dashboard visualising data from the Track Your Health project.">
+  <meta name="author" content="Author Name">
+
+  <meta property="og:title" content="Track Your Tinnitus">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="???">
+  <meta property="og:description" content="A Dashboard visualising data from the Track Your Health project.">
+
+  <link rel="icon" href="../images/favicon.ico">
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/tyt/tyt.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="..">
+          <img src="../images/uni-wuerzburg-logo.svg" height="64">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="#">Overview</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Projects
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li>
+                  <a class="dropdown-item" href="#">UNITI</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">TrackYourTinnitus (TYT)</a>
+                </li>
+                <li>
+                  <a class="dropdown-item active" href="#">Corona Check (CC)</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">Corona Health (CH)</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="../about" class="nav-link">About</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  
+    <h1>Corona Health Dashboard</h1>
+    
+    <hr/>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="..">Overview</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Corona Health</li>
+      </ol>
+    </nav>
+
+    <h1>Track Your Tinnitus</h1>  
+
+    <div>
+      <canvas id="myChart"></canvas>
+    </div>
+
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../js/tyt/tyt.js"></script>
+
+  <!-- JavaScript Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
