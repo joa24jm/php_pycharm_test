@@ -102,6 +102,7 @@ def main():
 
     # count gender by handedness (gives dataframe)
     sex_by_handedness = pd.crosstab(ans['5'], ans['6'])
+    sex_by_handedness.to_json('../../www/json/tyt/sex_by_handedness.json')
 
     # number of users
     num_users = ans.user_id.nunique()
