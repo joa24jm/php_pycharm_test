@@ -35,3 +35,11 @@ SideNotes:
 * Rüdiger muss Server bereitstellen, der die HTML Datei hostet
 
 ## TYT Dashboard
+
+## Start Server
+
+Run from project root folder.
+
+```bash
+npx http-server ./www --cors=capacitor://localhost --cors=http://localhost -c-1
+```
