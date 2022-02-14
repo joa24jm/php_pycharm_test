@@ -101,7 +101,6 @@ def get_dataframes(ans, qs):
 
         print('shape before drop:', output.shape)
         # drop na on threshold
-        # TODO: 'nan' are strings so cant be detected by drop_na: how to declare 'nan'(str) to nan(float)?
         output.dropna(axis='columns', thresh=10, inplace=True)
         print('shape after drop:', output.shape)
 
@@ -119,11 +118,23 @@ def get_dataframes(ans, qs):
         res_dic[key] = output
 
         # write to disc
-        output.to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
+        # output.to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
 
     # return result
     return res_dic
 
+def remove_na(df):
+    """
+    Drop column if less than 1 % are non NaN values
+    Return df
+    :param df:
+    :return: df with dropped columns
+    """
+
+    # drop NaN values
+    df.dropna(axis='columns', thresh=int(0.01 * len(df)), inplace=True)
+
+    return df
 
 if __name__ == '__main__':
     print('main executed')
@@ -138,7 +149,7 @@ if __name__ == '__main__':
     # get questionnaires table
     qs = tabs['questionnaires']
 
-    # load local for faster debugging
+    # # load local for faster debugging
     # ans = pd.read_csv('../../../results/dataframes/ch/22-02-11_answers.csv',
     #                   index_col='Unnamed: 0', encoding='utf-8')
     # qs = pd.read_csv('../../../results/dataframes/ch/22-02-11_questionnaires.csv',
@@ -152,6 +163,10 @@ if __name__ == '__main__':
     # check results
     print(dfs_dic.keys())
 
+    # remove nan values
+    for key in dfs_dic.keys():
+        dfs_dic[key] = remove_na(dfs_dic[key])
+
     # save dataframes to directory
     tday = date.today().strftime("%y-%m-%d")
 
@@ -161,7 +176,23 @@ if __name__ == '__main__':
 
     # safe all tables to disk
     for key in dfs_dic.keys():
+
+        # save to disc
         dfs_dic[key].to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
+
+        # print
+        print(f'Removing nan values for {key}')
+        # read in all dataframes again to cast 'nan' to NaN (float)
+        dfs_dic[key] = pd.read_csv(f'{path}/{tday}_{key}.csv', na_values='nan', index_col='answer_id')
+
+        # remove columns that have more than 99 % nan values
+        dfs_dic[key] = remove_na(dfs_dic[key])
+
+        # Again, save to disc
+        dfs_dic[key].to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
+
+        print(dfs_dic[key].info)
+
 
     # save information about all questionnaires
     qs.to_csv(f'{path}/{tday}_questionnaires.csv')
