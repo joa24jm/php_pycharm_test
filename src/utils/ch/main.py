@@ -5,7 +5,7 @@ import ast
 import pandas as pd
 
 
-def get_dataframes(ans, qs):
+def get_dataframes(ans: pd.DataFrame, qs: pd.DataFrame) -> dict:
     """
   Reads in, merges, sorts and unstacks the dataframes from the CH database.
 
@@ -39,9 +39,6 @@ def get_dataframes(ans, qs):
     keys = [key.replace(' ', '_').lower() for key in gqs.groups.keys()]
     res_dic = dict.fromkeys(keys)
 
-    # save dataframes to directory
-    tday = date.today().strftime("%y-%m-%d")
-
     # write date to CSV file
     path = '../../../results/dataframes/ch'
     Path(path).mkdir(parents=True, exist_ok=True)
@@ -52,21 +49,17 @@ def get_dataframes(ans, qs):
         # gets the questionnaire ids belonging to this questionnaire
         q_ids = gqs.get_group(key2).id.values.tolist()
 
-        # Inactive Baseline questionnaires can be dropped
-        # Drop the first questionnaire ids of Parent Baseline (id: 1), Heart Baseline (id: 3) and Children Baseline (id: 5)
-        for id in [1, 3, 5]:
-            if id in q_ids:
-              q_ids.remove(id)
-
         # select only answers that belong to this questionnaire
         sub_df = ans[ans.questionnaire_id.isin(q_ids)]
 
         # create an output df
         output = pd.DataFrame()
 
+        i = 0
+
         for a_id in sub_df.index:
 
-            print(key, '\t', a_id)
+            # print(key, '\t', a_id, i)
             # get additional info answer_id, user_id, date
             info = pd.DataFrame(sub_df.loc[a_id,
                                            ['questionnaire_id', 'user_id', 'created_at', 'sensordata']].to_dict(),
@@ -95,14 +88,10 @@ def get_dataframes(ans, qs):
             except:
                 print('exception occurred ', a_id)
                 continue
+            i+=1
 
         # handle surrogates ('utf-8' codec can't encode characters, ..., surrogates not allowed)
         output = output.applymap(lambda x: str(x).encode("utf-8", errors="ignore").decode("utf-8", errors="ignore"))
-
-        print('shape before drop:', output.shape)
-        # drop na on threshold
-        output.dropna(axis='columns', thresh=10, inplace=True)
-        print('shape after drop:', output.shape)
 
         # get meaningful filename
         # fname = key.replace(' ', '_').lower()
@@ -116,9 +105,6 @@ def get_dataframes(ans, qs):
 
         # save file to dic
         res_dic[key] = output
-
-        # write to disc
-        # output.to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
 
     # return result
     return res_dic
@@ -180,21 +166,19 @@ if __name__ == '__main__':
         # save to disc
         dfs_dic[key].to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
 
-        # print
         print(f'Removing nan values for {key}')
+        print('shape before drop:', dfs_dic[key].shape)
         # read in all dataframes again to cast 'nan' to NaN (float)
         dfs_dic[key] = pd.read_csv(f'{path}/{tday}_{key}.csv', na_values='nan', index_col='answer_id')
-
         # remove columns that have more than 99 % nan values
         dfs_dic[key] = remove_na(dfs_dic[key])
+        print('shape after drop:', dfs_dic[key].shape)
 
         # Again, save to disc
         dfs_dic[key].to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
 
-        print(dfs_dic[key].info)
-
-
     # save information about all questionnaires
     qs.to_csv(f'{path}/{tday}_questionnaires.csv')
+    ans.to_csv(f'{path}/{tday}_answers.csv')
 
     print('All done.')
