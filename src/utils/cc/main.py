@@ -1,6 +1,10 @@
 from datetime import date
 from pathlib import Path
 import tables
+from cc_helpers import create_dataframe, brush_up_dataframe, find_new_data
+import pandas as pd
+import os
+
 
 if __name__ == '__main__':
   print('main executed')
@@ -9,12 +13,30 @@ if __name__ == '__main__':
   tabs = tables.get_all_tables()
 
   # get different dataframes from the cc study
-  dfs = dict(list(tabs['answers'].groupby('questionnaire_id')))
-
+  df = tabs['answers']
   qs = tabs['questionnaires']
 
-  # TODO: Unstack dataframe answersheets, for ideas, check \Dropbox (University of Wuerzburg)\20-05-12_Corona_Check
+  # read in last exported df to find out new answer_ids
+  dates = [f.split('_')[0] for f in os.listdir('../../../results/dataframes/cc/') if 'corona-check-data' in f]
+  old = pd.read_csv(f'../../../results/dataframes/cc/{sorted(dates)[-1]}_corona-check-data.csv',
+                    index_col='answer_id')
 
+  # find diff from old df
+  print('Find new data since last export')
+  new = find_new_data(old, df)
+  print(f'Found {new.shape[0]} new answers')
+
+  # unstack the data
+  print('Unstack new data')
+  new = create_dataframe(new)
+
+  # brush up new data
+  print('Brush up new data')
+  new = brush_up_dataframe(new)
+
+  # append to old data
+  print('Merge old and new data')
+  new = old.append(new)
 
   # save dataframe to dir
   tday = date.today().strftime("%y-%m-%d")
@@ -24,5 +46,6 @@ if __name__ == '__main__':
   Path(path).mkdir(parents=True, exist_ok=True)
 
   # safe all tables to disk
-  for key in tabs.keys():
-    tabs[key].to_csv(f'{path}/{tday}_{key}.csv')
+  new.to_csv(f'{path}/{tday}_corona-check-data.csv', index_label='answer_id')
+
+  print('All done. New dataframe has shape {new.shape}.')
