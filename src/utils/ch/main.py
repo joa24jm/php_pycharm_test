@@ -3,7 +3,7 @@ from pathlib import Path
 import tables
 import ast
 import pandas as pd
-
+import json
 
 def get_dataframes(ans: pd.DataFrame, qs: pd.DataFrame) -> dict:
     """
@@ -65,6 +65,14 @@ def get_dataframes(ans: pd.DataFrame, qs: pd.DataFrame) -> dict:
                                            ['questionnaire_id', 'user_id', 'created_at', 'sensordata']].to_dict(),
                                 index=[a_id])
 
+            # get sensordata from info if available
+            if not info.sensordata.isnull().values.any():
+                info.sensordata = info.sensordata.apply(ast.literal_eval)
+                json_struct = json.loads(info.sensordata.to_json(orient="records"))
+                sens_data = pd.json_normalize(json_struct[0][0]).rename(index={0: a_id}).add_prefix('sensordata_')
+                info = pd.concat([info, sens_data], axis='columns')
+                info.drop(columns='sensordata', inplace=True)
+
             # get client data
             client = pd.DataFrame(sub_df.loc[a_id, 'client'], index=[a_id])
 
@@ -125,21 +133,18 @@ def remove_na(df):
 if __name__ == '__main__':
     print('main executed')
 
-    # get all tables, this takes a while
-    tabs = tables.get_all_tables()
-    print('All tables loaded.')
+    # # get all tables, this takes a while
+    # tabs = tables.get_all_tables()
+    # print('All tables loaded.')
+    #
+    # # get all answers from all quetionnnaires
+    # ans = tabs['answers']
+    #
+    # # get questionnaires table
+    # qs = tabs['questionnaires']
 
-    # get all answers from all quetionnnaires
-    ans = tabs['answers']
 
-    # get questionnaires table
-    qs = tabs['questionnaires']
 
-    # # load local for faster debugging
-    # ans = pd.read_csv('../../../results/dataframes/ch/22-02-11_answers.csv',
-    #                   index_col='Unnamed: 0', encoding='utf-8')
-    # qs = pd.read_csv('../../../results/dataframes/ch/22-02-11_questionnaires.csv',
-    #                  index_col='Unnamed: 0', encoding='utf-8')
 
     # get ALL dataframes from the ch database (This takes a while)
     # Parent, Children, Heart, Compass,
