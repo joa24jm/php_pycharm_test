@@ -2,6 +2,8 @@ import pandas as pd
 import glob
 import json
 from pathlib import Path
+from datetime import datetime#
+import numpy as np
 
 def create_codebook(questions_df):
     """
@@ -23,7 +25,10 @@ def read_in_dataframes():
 
     for csv_file in csv_files:
         name = csv_file.split('\\')[-1].split('.')[0].split('_')[-1]
-        df = pd.read_csv(csv_file, index_col='Unnamed: 0')
+        try:
+            df = pd.read_csv(csv_file, index_col='Unnamed: 0')
+        except:
+            df = pd.read_csv(csv_file)
         dfs_dic[name] = df
 
     return dfs_dic
@@ -81,21 +86,21 @@ def main():
     gender_s = gender_df.iloc[:, -1].value_counts()
 
     # this takes a couple of minutes
-    ans = create_readable_answers_df(dfs_dic['answers'], cb)
-
-    # write date to CSV file
-    path = '../../results/output/tyt'
-    Path(path).mkdir(parents=True, exist_ok=True)
-    ans.to_csv(path+'/22-01-17_answers_unstacked.csv', index=False)
+    if 'unstacked' not in dfs_dic.keys():
+        ans = create_readable_answers_df(dfs_dic['answers'], cb)
+        # write date to CSV file
+        date_str = '22-01-17'
+        path = '../../dataframes/tyt'
+        Path(path).mkdir(parents=True, exist_ok=True)
+        ans.to_csv(path + f'/{date_str}_answers_unstacked.csv', index=False)
+    else:
+        ans = dfs_dic['unstacked']
 
     # create codebook
     cb = create_codebook(dfs_dic['questions'])
 
     ######################################################
-    # test aggregtation
-    ans = pd.read_csv('../../results/output/tyt/22-01-17_answers_unstacked.csv')
-
-    # ans.head()
+    # test aggregation
 
     # count gender (gives series)
     sex_distribution = ans['5'].value_counts()
@@ -111,6 +116,13 @@ def main():
     ans_raw = pd.read_csv('../../results/dataframes/tyt/22-01-17_answers.csv')
     start_date = ans_raw.created_at.min()
     end_date = ans_raw.created_at.max()
+
+    # Age distribution
+    ans.replace('??.??.????', np.NaN, inplace=True)
+    ans['4'] = pd.to_datetime(ans['4'], format='%d.%m.%Y', errors='coerce')
+    ans['4'].dt.year.value_counts().sort_index().to_json('../../www/json/tyt/age_distribution.json')
+
+
 
 if __name__=='__main__':
     main()
