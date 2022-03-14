@@ -19,6 +19,12 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
     console.log('JSON Data:');
     console.log(json_data);
 
+    // ================================================
+    // START
+    // ================================================
+    // Hi Johannes, ab hier bitte deinen Code schreiben.
+    // ================================================
+    //
     // Configuring the Chart.js plot ...
     const data = {
       labels: labels,
@@ -36,37 +42,12 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
       options: {}
     };
 
-    const myChart = new Chart(
+    const _ = new Chart(
       document.getElementById('coronaCheckChart'),
       config
     );
+    // ================================================
+    // END
+    // ================================================
   }
 });
-
-// $.getJSON('../json/example/example.json', function(json_data) {
-//   // const json_data = [0, 10, 5, 2, 20, 30, 45]; // last value determines the y-axis scale maximum
-
-//   const data = {
-//     labels: labels,
-//     datasets: [{
-//       label: 'My First dataset',
-//       backgroundColor: 'rgb(255, 99, 132)',
-//       borderColor: 'rgb(255, 99, 132)',
-//       data: json_data,
-//     }]
-//   };
-
-//   const config = {
-//     type: 'line',
-//     data: data,
-//     options: {}
-//   };
-
-//   const myChart = new Chart(
-//     document.getElementById('myChart'),
-//     config
-//   );
-// });
-// ================================================================
-// Basic Chart.js example [END]
-// ================================================================
