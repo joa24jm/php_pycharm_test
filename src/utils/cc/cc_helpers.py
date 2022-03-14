@@ -180,6 +180,7 @@ def brush_up_dataframe(df):
                '[30.0, 40.0)': '30-39',
                '[40.0, 50.0)': '40-49',
                '[50.0, 60.0)': '50-59',
+               '[50, 60)':'50-59', # one outlayer in the dataset?
                '[60.0, 70.0)': '60-69',
                '[70.0, 80.0)': '70-79',
                '[80.0, 130.0)': '80+'
@@ -198,7 +199,7 @@ def brush_up_dataframe(df):
     # Replace YES with NO and vice versa for questionnaire_id == 2
     print('5. Merge different versions of the questionnaire')
 
-    # # get all questions with version 2
+    # get all questions with version 2
     idxs = df[df['questionnaire_id'] == 2].index
 
     # invert answer meaning
