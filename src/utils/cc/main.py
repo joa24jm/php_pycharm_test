@@ -24,6 +24,9 @@ if __name__ == '__main__':
   # find diff from old df
   print('Find new data since last export')
   new = find_new_data(old, df)
+  if new.shape[0] == 0:
+    print('Nothing to export, 0 new answers since last export.')
+    exit()
   print(f'Found {new.shape[0]} new answers')
 
   # unstack the data
