@@ -3,9 +3,10 @@ from pathlib import Path
 import tables
 import ast
 import pandas as pd
+import json
 
-def get_dataframes(ans, qs):
-  """
+def get_dataframes(ans: pd.DataFrame, qs: pd.DataFrame) -> dict:
+    """
   Reads in, merges, sorts and unstacks the dataframes from the CH database.
 
   :param ans: Table 'answers' from the CH database
@@ -24,114 +25,165 @@ def get_dataframes(ans, qs):
                                     }
   """
 
-  # declare a string '[a , b , c]' as a list [a, b, c]
-  ans['answers'] = ans['answers'].apply(ast.literal_eval)
-  ans['client'] = ans['client'].apply(ast.literal_eval)
+    # set answers id as index
+    ans = ans.set_index('id')
 
-  # get questionnaire ids for studies (! several ids for the same study)
-  gqs = qs.groupby('name')
+    # declare a string '[a , b , c]' as a list [a, b, c]
+    ans['answers'] = ans['answers'].apply(ast.literal_eval)
+    ans['client'] = ans['client'].apply(ast.literal_eval)
 
-  # initialize result_dic
-  res_dic = dict.fromkeys(gqs.groups.keys())
+    # get questionnaire ids for studies (! several ids for the same study)
+    gqs = qs.groupby('name')
 
-  # TODO: Check that loop works as expected
-  # iterate over every questionnaire (no matter the version)
-  for key in gqs.groups.keys():
+    # initialize result_dic
+    keys = [key.replace(' ', '_').lower() for key in gqs.groups.keys()]
+    res_dic = dict.fromkeys(keys)
 
-    # TODO: check that if key is Baseline Parent, Baseline Children, Baseline Heart drop the right and append the right dfs
+    # write date to CSV file
+    path = '../../../results/dataframes/ch'
+    Path(path).mkdir(parents=True, exist_ok=True)
 
-    # gets the questionnaire ids belonging to this questionnaire
-    q_ids = gqs.get_group(key).id.values.tolist()
+    # iterate over every questionnaire (no matter the version)
+    for key, key2 in zip(keys, gqs.groups.keys()):
 
-    # count NULL answers per questionnaire id
-    i = 0
-    sub_df = ans[ans.questionnaire_id.isin(q_ids)]
-    output = pd.DataFrame()
+        # gets the questionnaire ids belonging to this questionnaire
+        q_ids = gqs.get_group(key2).id.values.tolist()
 
-    for idx in sub_df.index:
+        # select only answers that belong to this questionnaire
+        sub_df = ans[ans.questionnaire_id.isin(q_ids)]
 
-      # get additional info answer_id, user_id, date
-      info = pd.DataFrame(
-        sub_df.loc[idx, ['questionnaire_id', 'id', 'user_id', 'created_at', 'sensordata']]).transpose().reset_index(
-        drop=True)
+        # create an output df
+        output = pd.DataFrame()
 
-      # get client data
-      client = pd.DataFrame(sub_df.loc[idx, 'client'], index=[0])
+        i = 0
 
-      # get answers
-      cache_df = pd.DataFrame.from_dict(sub_df['answers'][idx])
+        for a_id in sub_df.index:
 
-      # if answers is empty, continue in loop
-      if cache_df.empty:
-        i += 1
-        continue
+            # print(key, '\t', a_id, i)
+            # get additional info answer_id, user_id, date
+            info = pd.DataFrame(sub_df.loc[a_id,
+                                           ['questionnaire_id', 'user_id', 'created_at', 'sensordata']].to_dict(),
+                                index=[a_id])
 
-      cache_dict = dict(zip(cache_df.label, cache_df.value))
-      answers_df = pd.DataFrame.from_dict(cache_dict, orient='index').transpose()
+            # get sensordata from info if available
+            if not info.sensordata.isnull().values.any():
+                info.sensordata = info.sensordata.apply(ast.literal_eval)
+                json_struct = json.loads(info.sensordata.to_json(orient="records"))
+                sens_data = pd.json_normalize(json_struct[0][0]).rename(index={0: a_id}).add_prefix('sensordata_')
+                info = pd.concat([info, sens_data], axis='columns')
+                info.drop(columns='sensordata', inplace=True)
 
-      # concat info, client, and answers
-      df_concat = pd.concat([info, answers_df, client], axis=1)
+            # get client data
+            client = pd.DataFrame(sub_df.loc[a_id, 'client'], index=[a_id])
 
-      # write ans_concat at the end of output
-      output = output.append(df_concat, ignore_index=True)
+            # get answers
+            cache_df = pd.DataFrame.from_dict(sub_df.loc[a_id, 'answers'])
+            if cache_df.empty:
+                continue
+            try: # if the values in cache_dict are a list, then pd.DataFrame.from_dict() expects two columns
+                 # however we only have one answer ids
+                 # solution: cast the list as a str so it becomes one object
+                cache_dict = dict(zip(cache_df.label, cache_df.value))
+                vals = [str(val) for val in cache_dict.values()]
+                cache_dict = dict(zip(cache_df.label, vals))
+                answers_df = pd.DataFrame.from_dict(cache_dict, orient='index', columns=[a_id]).transpose()
 
-    # get meaningful filename
-    fname = key.replace(' ', '_').lower()
+                # concat info, client, and answers
+                df_concat = pd.concat([info, answers_df, client], axis='columns', ignore_index=False)
 
-    # handle surrogates
-    output = output.applymap(lambda x: str(x).encode("utf-8", errors="ignore").decode("utf-8", errors="ignore"))
+                # write ans_concat at the end of output
+                output = output.append(df_concat, ignore_index=False)
+            except:
+                print('exception occurred ', a_id)
+                continue
+            i+=1
 
-    # Check shape of output! should be 1540 for parents, but its 440 written
-    print(fname)
-    print(output.shape)
-    print()
+        # handle surrogates ('utf-8' codec can't encode characters, ..., surrogates not allowed)
+        output = output.applymap(lambda x: str(x).encode("utf-8", errors="ignore").decode("utf-8", errors="ignore"))
 
-    # save file to dic
-    res_dic[key] = output
+        # get meaningful filename
+        # fname = key.replace(' ', '_').lower()
+        fname = key
 
-  # return result
-  return res_dic
+        print(fname)
+        print(output.shape)
+        if 'created_at' in output.columns:
+            print(output.created_at.min())
+            print(output.created_at.max())
 
+        # save file to dic
+        res_dic[key] = output
 
+    # return result
+    return res_dic
+
+def remove_na(df):
+    """
+    Drop column if less than 1 % are non NaN values
+    Return df
+    :param df:
+    :return: df with dropped columns
+    """
+
+    # drop NaN values
+    df.dropna(axis='columns', thresh=int(0.01 * len(df)), inplace=True)
+
+    return df
 
 if __name__ == '__main__':
-  print('main executed')
+    print('main executed')
 
-  # get all tables, this takes a while
-  tabs = tables.get_all_tables()
-
-  # get all answers from all quetionnnaires
-  ans = tabs['answers']
-
-  # get questionnaires table
-  qs = tabs['questionnaires']
-
-
-  dfs_dic = get_dataframes(ans, qs)
-
-
-  # get different dataframes from the cc study
-  dfs = dict(list(tabs['answers'].groupby('questionnaire_id')))
-
-  # Inactive FollowUp Questaionnaires have to be appended to active FollowUp
-  # Inactive Baselin questionnaires can be dropped
+    # # get all tables, this takes a while
+    # tabs = tables.get_all_tables()
+    # print('All tables loaded.')
+    #
+    # # get all answers from all quetionnnaires
+    # ans = tabs['answers']
+    #
+    # # get questionnaires table
+    # qs = tabs['questionnaires']
 
 
 
-  # TODO: Merge different versions of RKI questionnaires and save separately
 
-  qs = tabs['questionnaires']
+    # get ALL dataframes from the ch database (This takes a while)
+    # Parent, Children, Heart, Compass,
+    print('Unstacking dataframes, this takes a while')
+    dfs_dic = get_dataframes(ans, qs)
 
-  # TODO: Unstack dataframe answersheets, for ideas, check \Dropbox (University of Wuerzburg)\20-05-12_Corona_Check
+    # check results
+    print(dfs_dic.keys())
 
+    # remove nan values
+    for key in dfs_dic.keys():
+        dfs_dic[key] = remove_na(dfs_dic[key])
 
-  # save dataframe to dir
-  tday = date.today().strftime("%y-%m-%d")
+    # save dataframes to directory
+    tday = date.today().strftime("%y-%m-%d")
 
-  # write date to CSV file
-  path = '../../../results/dataframes/cc'
-  Path(path).mkdir(parents=True, exist_ok=True)
+    # write date to CSV file
+    path = '../../../results/dataframes/ch'
+    Path(path).mkdir(parents=True, exist_ok=True)
 
-  # safe all tables to disk
-  for key in tabs.keys():
-    tabs[key].to_csv(f'{path}/{tday}_{key}.csv')
+    # safe all tables to disk
+    for key in dfs_dic.keys():
+
+        # save to disc
+        dfs_dic[key].to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
+
+        print(f'Removing nan values for {key}')
+        print('shape before drop:', dfs_dic[key].shape)
+        # read in all dataframes again to cast 'nan' to NaN (float)
+        dfs_dic[key] = pd.read_csv(f'{path}/{tday}_{key}.csv', na_values='nan', index_col='answer_id')
+        # remove columns that have more than 99 % nan values
+        dfs_dic[key] = remove_na(dfs_dic[key])
+        print('shape after drop:', dfs_dic[key].shape)
+
+        # Again, save to disc
+        dfs_dic[key].to_csv(f'{path}/{tday}_{key}.csv', index_label='answer_id', index=True)
+
+    # save information about all questionnaires
+    qs.to_csv(f'{path}/{tday}_questionnaires.csv')
+    ans.to_csv(f'{path}/{tday}_answers.csv')
+
+    print('All done.')
