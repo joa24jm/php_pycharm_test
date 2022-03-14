@@ -24,6 +24,8 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
     // ================================================
     // Hi Johannes, ab hier bitte deinen Code schreiben.
     // ================================================
+    // Notes:
+    // - get the data from the `json_data` object
     //
     // Configuring the Chart.js plot ...
     const data = {
