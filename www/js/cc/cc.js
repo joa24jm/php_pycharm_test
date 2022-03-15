@@ -1,16 +1,7 @@
 // ================================================================
 // Basic Chart.js example [START]
 // ================================================================
-const json_data_url = '../../json/example/example.json';
-
-const labels = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-];
+const json_data_url = '../../json/cc/age_distribution.json';
 
 window.onload = getJSON(json_data_url, function(err, json_data) {
   if (err !== null) {
@@ -22,24 +13,19 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
     // ================================================
     // START
     // ================================================
-    // Hi Johannes, ab hier bitte deinen Code schreiben.
-    // ================================================
-    // Notes:
-    // - get the data from the `json_data` object
-    //
-    // Configuring the Chart.js plot ...
+
     const data = {
-      labels: labels,
+      labels: Object.keys(json_data),
       datasets: [{
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: json_data['values'],
+        label: 'Age Distribution',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        data: Object.values(json_data),
       }]
     };
 
     const config = {
-      type: 'line',
+      type: 'bar',
       data: data,
       options: {}
     };
