@@ -29,7 +29,7 @@ counters.forEach(counter => {
 		// Check if target is reached
 		if (count < target) {
 			// Add inc to count and output in counter
-			counter.innerText = count + inc;
+			counter.innerText = Math.round(count + inc);
 			// Call function every ms
 			setTimeout(updateCount, 1);
 		} else {
