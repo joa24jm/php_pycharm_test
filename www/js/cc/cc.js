@@ -17,8 +17,13 @@ const speed = 150; // The lower the slower
 counters.forEach(counter => {
 	const updateCount = () => {
     // TODO: Parse json data correctly - how to access the right data? n_users, n_countries, n_evaluations
-		const target = json_data.n_cor;
+    // console.log("TEST 2:");
+    // console.log(counter);
+		const target = json_data[counter.id];
 		const count = +counter.innerText;
+
+    console.log('TEST');
+    console.log(json_data);
 
 		// Lower inc to slow and higher to slow
 		const inc = target / speed;
