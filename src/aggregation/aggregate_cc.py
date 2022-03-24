@@ -8,11 +8,11 @@ from numpyencoder import NumpyEncoder
 
 def main():
     # read in latest ch dataframe
-    cc_dfs = sorted([df for df in os.listdir('../../results/dataframes/cc/') if 'corona-check-data' in df])
+    cc_dfs = sorted([df for df in os.listdir('../../../results/dataframes/cc/') if 'corona-check-data' in df])
     # last df is the latest
     df_name = cc_dfs[-1]
     # read in
-    df = pd.read_csv(f'../../results/dataframes/cc/{df_name}')
+    df = pd.read_csv(f'../../../results/dataframes/cc/{df_name}')
 
     # get some basic facts
     facts = {'n_users':None,
@@ -25,14 +25,14 @@ def main():
     # No. of corona evaluations
     facts['n_cor'] = df.corona_result.count()
     # Save to json
-    with open(f'../../www/json/cc/basic_facts.json', 'w') as fp:
+    with open(f'../../../www/json/cc/basic_facts.json', 'w') as fp:
         json.dump(facts, fp, cls=NumpyEncoder)
 
     # Age Distribution
     df.age.replace({'[50, 60)':'50-59'}, inplace=True)
     age_distr = dict(df.age.value_counts().sort_index())
     # Save to json
-    with open(f'../../www/json/cc/age_distribution.json', 'w') as fp:
+    with open(f'../../../www/json/cc/age_distribution.json', 'w') as fp:
         json.dump(age_distr, fp, cls=NumpyEncoder)
 
     # Corona result
@@ -42,7 +42,7 @@ def main():
                4:'Neither symptoms nor contact'}
     df.corona_result.replace(res_dic, inplace=True)
     corona_res = pd.crosstab(df.age, df.corona_result)
-    corona_res.to_csv('../../www/json/cc/corona_result.csv', index_label='age')
+    corona_res.to_csv('../../../www/json/cc/corona_result.csv', index_label='age')
 
 if __name__ == '__main__':
     main()
