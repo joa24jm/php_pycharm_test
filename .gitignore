@@ -1,5 +1,6 @@
 .idea/
 *csv
+!/src/sources/iso2-country-mapping.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
