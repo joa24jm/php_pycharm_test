@@ -6,6 +6,7 @@ import os
 import json
 from numpyencoder import NumpyEncoder
 
+# working directory should be \src\utils\cc\
 def main():
     # read in latest ch dataframe
     cc_dfs = sorted([df for df in os.listdir('../../../results/dataframes/cc/') if 'corona-check-data' in df])
@@ -43,6 +44,23 @@ def main():
     df.corona_result.replace(res_dic, inplace=True)
     corona_res = pd.crosstab(df.age, df.corona_result)
     corona_res.to_csv('../../../www/json/cc/corona_result.csv', index_label='age')
+
+    # Country by number of evaluations
+    # read in iso2 -> countryname mapping and convert to dict
+    iso2 = pd.read_csv('../../../src/sources/iso2-country-mapping.csv', encoding='cp1250')
+    cc_dict = dict(zip(iso2.ISO2, iso2.en))
+    corona_evals_by_country = pd.crosstab(df.country_code, df.corona_result).sum(axis=1)
+    corona_evals_by_country = pd.DataFrame(corona_evals_by_country, columns=['count'])
+    corona_evals_by_country['country'] = corona_evals_by_country.index.map(cc_dict)
+    corona_evals_by_country = corona_evals_by_country[corona_evals_by_country['country'].notna()]
+    corona_evals_by_country = dict(zip(corona_evals_by_country['country'],
+                        corona_evals_by_country['count']))
+
+    # re-assign dict keys
+
+    # Save to json
+    with open(f'../../../www/json/cc/corona_evals_by_country.json', 'w') as fp:
+        json.dump(corona_evals_by_country, fp, cls=NumpyEncoder)
 
 if __name__ == '__main__':
     main()
