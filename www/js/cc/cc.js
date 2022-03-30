@@ -116,74 +116,128 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
 // ================================================================
 // Stacked Bar Chart [START]
 // ================================================================
-const stackedBarCartJSON = '../../json/cc/corona_result.csv';
-window.onload = getFileContent(stackedBarCartJSON, false)
-  .then((csvString) => {
-    // header & data
-    const csvObject = csvToObject(csvString);
+function initStackedBarChart(object) {
+  const csvObject = structuredClone(object);
+  // Age ranges are used as labels
+  const labels = csvObject.data
+    .map(elementData => elementData.shift());
 
-    // Age ranges are used as labels
-    const labels = csvObject.data
-      .map(elementData => elementData.shift());
+  const colorScaleMin = 0;
+  const colorScaleMax = csvObject.header.length;
+  // Remove "age" label from headers
+  csvObject.header.shift();
+  const datasets = csvObject.header
+    .map((headerString, index) => {
+      return {
+        label: headerString,
+        data: csvObject.data.map((elementRow) => elementRow[index]),
+        backgroundColor: getChromaticScaleColor(index, {minValue: colorScaleMin, maxValue: colorScaleMax})
+      };
+    });
 
-    const colorScaleMin = 0;
-    const colorScaleMax = csvObject.header.length;
-    //
-    csvObject.header.shift();
-    const datasets = csvObject.header
-      .map((headerString, index) => {
-        return {
-          label: headerString,
-          data: csvObject.data.map((elementRow) => elementRow[index]),
-          backgroundColor: getChromaticScaleColor(index, {minValue: colorScaleMin, maxValue: colorScaleMax})
-        };
-      });
+  const stackedBarChartData = {
+    labels,
+    datasets
+  };
 
-    const stackedBarChartData = {
-      labels,
-      datasets
-    };
-
-    const config = {
-      type: 'bar',
-      data: stackedBarChartData,
-      options: {
-        plugins: {},
-        responsive: true,
-        scales: {
-          y: {
-            stacked: true,
-            title: {
-              display: true,
-              text: 'Number of participants'
-            }
-          },
-          x: {
-            stacked: true,
-            title: {
-              display: true,
-              text: 'Age range in years'
-            }
+  const config = {
+    type: 'bar',
+    data: stackedBarChartData,
+    options: {
+      plugins: {},
+      responsive: true,
+      scales: {
+        y: {
+          stacked: true,
+          title: {
+            display: true,
+            text: 'Number of participants'
           }
         },
-        animations: {
-          y: {
-            easing: 'easeInOutElastic',
-            from: (ctx) => {
-              if (ctx.type === 'data') {
-                if (ctx.mode === 'default' && !ctx.dropped) {
-                  ctx.dropped = true;
-                  return 0;
-                }
+        x: {
+          stacked: true,
+          title: {
+            display: true,
+            text: 'Age range in years'
+          }
+        }
+      },
+      animations: {
+        y: {
+          easing: 'easeInOutElastic',
+          from: (ctx) => {
+            if (ctx.type === 'data') {
+              if (ctx.mode === 'default' && !ctx.dropped) {
+                ctx.dropped = true;
+                return 0;
               }
             }
           }
         }
       }
-    };
+    }
+  };
 
-    new Chart(
-      document.getElementById('coronaStackedBarChart'),
-      config
-    );
+  new Chart(
+    document.getElementById('coronaStackedBarChart'),
+    config
+  );
+}
+
+function initLineChart(object) {
+  const csvObject = structuredClone(object);
+  // Age ranges are used as labels
+  const labels = csvObject.data
+    .map(elementData => elementData.shift());
+
+  const colorScaleMin = 0;
+  const colorScaleMax = csvObject.header.length;
+  // Remove the "age" header
+  csvObject.header.shift();
+  const datasets = csvObject.header
+    .map((headerString, index) => {
+      const hexColor = getChromaticScaleColor(index, {minValue: colorScaleMin, maxValue: colorScaleMax});
+      return {
+        label: headerString,
+        data: csvObject.data.map((elementRow) => elementRow[index]),
+        borderColor: hexColor,
+        backgroundColor: hexToRGBA(hexColor, 0.5)
+      };
+    });
+
+  const lineChartData = {
+    labels,
+    datasets
+  };
+
+  const config = {
+    type: 'line',
+    data: lineChartData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Line Chart'
+        }
+      }
+    },
+  };
+
+  new Chart(
+    document.getElementById('coronaLineChart'),
+    config
+  );
+}
+
+
+const stackedBarCartJSON = '../../json/cc/corona_result.csv';
+window.onload = getFileContent(stackedBarCartJSON, false)
+  .then((csvString) => {
+    const csvObject = csvToObject(csvString);
+    initStackedBarChart(csvObject);
+    initLineChart(csvObject);
   });

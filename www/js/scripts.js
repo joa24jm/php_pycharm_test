@@ -108,3 +108,29 @@ function getChromaticScaleColor(value = 0, {minValue = 0, maxValue = 100, defaul
   const colorIndex = Math.floor((value - minValue) / distance * colorScale.length);
   return colorScale[colorIndex];
 }
+
+/**
+ * Convert a hex string into its rgba string-representation.
+ * After: https://gist.github.com/danieliser/b4b24c9f772066bcf0a6
+ *
+ * @param hexString
+ * @param opacity
+ * @returns {string}
+ */
+function hexToRGBA(hexString, opacity = 1.0) {
+  if (opacity < 0 || opacity > 1) {
+    throw Error(`Opcaity level out of bounds [0, 1]: ${opacity}`);
+  }
+
+  hexString = hexString.replace('#', '');
+
+  if (hexString.length === 3) {
+    hexString = `${hexString[0]}${hexString[0]}${hexString[1]}${hexString[1]}${hexString[2]}${hexString[2]}`;
+  }
+
+  const r = parseInt(hexString.substring(0, 2), 16);
+  const g = parseInt(hexString.substring(2, 4), 16);
+  const b = parseInt(hexString.substring(4, 6), 16);
+
+  return `rgba(${r},${g},${b},${opacity})`;
+}
