@@ -133,3 +133,9 @@ dmypy.json
 .pyre/
 /src/remote/remote_credentials.xlsx
 .vscode/launch.json
+
+# exceptions for development phase
+!www/json/cc/age_distribution.json
+!www/json/cc/basic_facts.json
+!www/json/cc/corona_evals_by_country.json
+!www/json/cc/corona_result.csv
