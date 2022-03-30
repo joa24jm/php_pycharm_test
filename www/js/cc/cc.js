@@ -22,8 +22,8 @@ counters.forEach(counter => {
 		const target = json_data[counter.id];
 		const count = +counter.innerText;
 
-    console.log('TEST');
-    console.log(json_data);
+    //console.log('TEST');
+    //console.log(json_data);
 
 		// Lower inc to slow and higher to slow
 		const inc = target / speed;
@@ -45,8 +45,7 @@ counters.forEach(counter => {
 	updateCount();
 });
 
-
-  });
+});
 
 
 
@@ -98,7 +97,7 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
               text: 'Age range in years'
             }
           }
-        }     
+        }
       },
     };
 
@@ -106,8 +105,60 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
       document.getElementById('coronaCheckChart'),
       config
     );
-    // ================================================
-    // END
-    // ================================================
   }
 });
+// ================================================
+// END
+// ================================================
+
+// ================================================================
+// Worldmap [START]
+// ================================================================
+
+fetch('https://unpkg.com/world-atlas/countries-50m.json').then((r) => r.json()).then((data) => {
+	const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
+
+	console.log(countries)
+
+	const json_data_url = '../../json/cc/corona_evals_by_country.json'
+
+	window.onload = getJSON(json_data_url, function (err, json_data) {
+		if (err !== null) {
+			console.log('Something went wrong: ' + err);
+		} else {
+			// console.log('JSON Data:');
+			// console.log(json_data);
+			console.log('Parsing JSON data')
+			console.log(json_data)
+
+
+			const chart = new Chart(document.getElementById("coronaCheckWorldmap").getContext("2d"), {
+				type: 'choropleth',
+				data: {
+					labels: countries.map((d) => d.properties.name),
+					datasets: [{
+						label: 'Countries',
+						data: countries.map((d) => ({feature: d, value: json_data[d.properties.name]})),
+					}]
+				},
+				options: {
+					showOutline: true,
+					showGraticule: true,
+					plugins: {
+						legend: {
+							display: false
+						},
+					},
+					scales: {
+						xy: {
+							projection: 'equalEarth'
+						}
+					}
+				}
+			});
+		}
+	});
+});
+// ================================================
+// Worldmap END
+// ================================================
