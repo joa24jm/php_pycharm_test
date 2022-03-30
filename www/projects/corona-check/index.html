@@ -78,37 +78,6 @@
     </nav>
   
     <h1>Corona Check Dashboard</h1>
-
-    <div id="basic_facts"></div>
-
-    <header>
-      <div class="container">
-      </div>
-    </header>
-
-    <!--Add animated counter-->
-    <section class="counters row">
-      <div class="col-sm-4 text-center">
-        <div id="n_users" class="counter" data-target="10000">0</div>
-        <p class="h3">
-          Users
-        </p>
-      </div>
-      <hr class="d-sm-none" />
-      <div class="col-sm-4 text-center">
-        <div id="n_countries" class="counter" data-target="60000">0</div>
-        <p class="h3">
-          Countries
-        </p>
-      </div>
-      <hr class="d-sm-none" />
-      <div class="col-sm-4 text-center">
-        <div id="n_cor" class="counter" data-target="70000">0</div>
-        <p class="h3">
-          Corona Check Evaluations
-        </p>
-      </div>
-    </section>
     
     <hr/>
 
@@ -119,26 +88,86 @@
       </ol>
     </nav>
 
-    <h2>What is the age distribution of the app users?</h2>
+    <div class="container">
+      <div class="row">
+        <!--Add animated counter-->
+        <section class="col-12 counters row">
+          <div class="col-sm-4 text-center">
+            <div id="n_users" class="counter" data-target="10000">0</div>
+            <p class="h3">
+              Users
+            </p>
+          </div>
+          <hr class="d-sm-none" />
+          <div class="col-sm-4 text-center">
+            <div id="n_countries" class="counter" data-target="60000">0</div>
+            <p class="h3">
+              Countries
+            </p>
+          </div>
+          <hr class="d-sm-none" />
+          <div class="col-sm-4 text-center">
+            <div id="n_cor" class="counter" data-target="70000">0</div>
+            <p class="h3">
+              Corona Check Evaluations
+            </p>
+          </div>
+        </section>
 
-    <div>
-      <canvas id="coronaCheckChart"></canvas>
-    </div>
+        <!-- TODO: What is that? -->
+        <div id="basic_facts"></div>
+        
+        <section class="col-xl-12 row">
+          <h2 class="col-12">
+            App User Age Distribution
+          </h2>
+      
+          <div class="col-2"></div>
+          <div class="col-xl-8">
+            <canvas id="coronaCheckChart"></canvas>
+          </div>
+        </section>
 
-    <h2>Where did the Corona Check evaluations take place?</h2>
+        <hr />
+    
+        <section class="col-12 row">
+          <h2 class="col-12">
+            Where did the Corona Check evaluations take place?
+          </h2>
+          
+          <div class="col-2"></div>
+          <div class="col-xl-8">
+            <canvas id="coronaCheckWorldmap"></canvas>
+          </div>
+        </section>
 
-    <div>
-      <canvas id="coronaCheckWorldmap"></canvas>
-    </div>
+        <hr />
+    
+        <section class="col-xl-12 row">
+          <h2 class="col-12">
+            Symptoms by Age
+          </h2>
 
-    <div>
-      <canvas id="coronaStackedBarChart"></canvas>
-    </div>
+          <div class="col-2"></div>
+          <div class="col-xl-8">
+            <canvas id="coronaStackedBarChart"></canvas>
+          </div>
+        </section>
 
-    <div>
-      <canvas id="coronaLineChart"></canvas>
-    </div>
+        <hr />
+  
+        <section class="col-xl-12 row">
+          <h2 class="col-12">
+            Symptoms by Age
+          </h2>
 
+          <div class="col-2"></div>
+          <div class="col-xl-8">
+            <canvas id="coronaLineChart"></canvas>
+          </div>
+        </section>
+      </div> <!-- row -->
+    </div> <!-- container -->
   </div>
   
   <!--Chart.js v3.7.1-->
