@@ -167,7 +167,8 @@ fetch('https://unpkg.com/world-atlas/countries-50m.json').then((r) => r.json()).
 // Stacked Bar Chart [START]
 // ================================================================
 function initStackedBarChart(object) {
-  const csvObject = structuredClone(object);
+  // Deep copy the data object, as it is mutuated e.g. by shift().
+  const csvObject = JSON.parse(JSON.stringify(object));
   // Age ranges are used as labels
   const labels = csvObject.data
     .map(elementData => elementData.shift());
@@ -235,7 +236,8 @@ function initStackedBarChart(object) {
 }
 
 function initLineChart(object) {
-  const csvObject = structuredClone(object);
+  // Deep copy the data object, as it is mutuated e.g. by shift().
+  const csvObject = JSON.parse(JSON.stringify(object));
   // Age ranges are used as labels
   const labels = csvObject.data
     .map(elementData => elementData.shift());

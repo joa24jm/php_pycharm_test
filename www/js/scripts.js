@@ -106,7 +106,7 @@ function getChromaticScaleColor(value = 0, {minValue = 0, maxValue = 100, defaul
   // Map value to color scale with respect to min- and max-values.
   const distance = Math.abs(minValue - maxValue);
   const colorIndex = Math.floor((value - minValue) / distance * colorScale.length);
-  return colorScale[colorIndex];
+  return `#${colorScale[colorIndex]}`;
 }
 
 /**
