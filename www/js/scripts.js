@@ -119,7 +119,9 @@ function getChromaticScaleColor(value = 0, {minValue = 0, maxValue = 100, defaul
  */
 function hexToRGBA(hexString, opacity = 1.0) {
   if (opacity < 0 || opacity > 1) {
-    throw Error(`Opcaity level out of bounds [0, 1]: ${opacity}`);
+    console.error(`Opcaity level out of bounds [0, 1]: ${opacity}`);
+    // Use 1.0 as default opacity.
+    opacity = 1.0;
   }
 
   hexString = hexString.replace('#', '');
