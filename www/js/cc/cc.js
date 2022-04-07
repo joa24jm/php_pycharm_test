@@ -293,3 +293,21 @@ window.onload = getFileContent(stackedBarCartJSON, false)
     initStackedBarChart(csvObject);
     initLineChart(csvObject);
   });
+
+new Chart(document.getElementById("livingRoomCornerChart"), {
+  type: 'pie',
+  data: {
+    labels: ["Left Wall", "Floor", "Right Wall"],
+    datasets: [{
+      label: "Population (millions)",
+      backgroundColor: ["#BBBBBB", "#3B2929","#878787"],
+      data: [35, 35, 30]
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'A graphical visualisation of a living room corner as pie chart.'
+    }
+  }
+});
