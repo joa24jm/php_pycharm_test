@@ -235,6 +235,10 @@ function initStackedBarChart(object) {
   );
 }
 
+// ================================================================
+// Stacked Bar Chart [END]
+// ================================================================
+
 function initLineChart(object) {
   // Deep copy the data object, as it is mutuated e.g. by shift().
   const csvObject = JSON.parse(JSON.stringify(object));
@@ -294,20 +298,40 @@ window.onload = getFileContent(stackedBarCartJSON, false)
     initLineChart(csvObject);
   });
 
-new Chart(document.getElementById("livingRoomCornerChart"), {
-  type: 'pie',
-  data: {
-    labels: ["Left Wall", "Floor", "Right Wall"],
-    datasets: [{
-      label: "Population (millions)",
-      backgroundColor: ["#BBBBBB", "#3B2929","#878787"],
-      data: [35, 35, 30]
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: 'A graphical visualisation of a living room corner as pie chart.'
+// ================================================================
+// Living Room Corner Chart [START]
+// ================================================================
+
+
+const json_data_url_3 = '../../json/cc/symptoms_count.json';
+
+window.onload = getJSON(json_data_url_3, function(err, json_data) {
+    if (err !== null) {
+        console.log('Something went wrong: ' + err);
+    } else {
+        console.log('Symptoms Count:');
+        console.log(json_data);
     }
-  }
+
+    new Chart(document.getElementById("livingRoomCornerChart"), {
+        type: 'pie',
+        data: {
+            labels: Object.keys(json_data),
+            datasets: [{
+                label: "Total number of reported symptoms",
+                backgroundColor: ["#3158E7","#C24BD8","#3AF2AC","#CCF14F","#41E52E","#05F6DE","#E9125E","#B89AA3","#77F693","#6D5427"],
+                data: Object.values(json_data)
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'A graphical visualisation of a living room corner as pie chart.'
+            }
+        }
+    });
 });
+
+// ================================================================
+// Living Room Corner Chart [END]
+// ================================================================
