@@ -67,8 +67,22 @@ def main():
                    'headace', 'musclepain', 'diarrhea']
     symptoms_count = dict(df.loc[:, symptoms_ls].sum())
     # Save to json
-    with open(f'../../www/json/cc/symptoms_count.json', 'w') as fp:
+    with open(f'../../../www/json/cc/symptoms_count.json', 'w') as fp:
         json.dump(symptoms_count, fp, cls=NumpyEncoder)
+
+    # Education by country for the top 5 countries
+    top_five_countries = df.country_code.value_counts().iloc[:5].index.to_list()
+    # get iso2 mapping
+    edu_by_country = pd.crosstab(df.education, df.country_code).loc[:, top_five_countries]
+    edu_by_country = edu_by_country.reindex(['9ORLESS', '10TO11', '12ORMORE', 'NOANSWER'])
+    # get speaking country names
+    edu_by_country.columns = [cc_dict[col] for col in edu_by_country.columns]
+    # normalize values to 100 %
+    for col in edu_by_country.columns:
+        edu_by_country[col] = edu_by_country[col] / edu_by_country[col].sum()
+    # save to csv
+    edu_by_country.to_csv('../../../www/json/cc/edu_by_country.csv', index_label='education')
+
 
 if __name__ == '__main__':
     main()
