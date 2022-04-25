@@ -62,5 +62,13 @@ def main():
     with open(f'../../../www/json/cc/corona_evals_by_country.json', 'w') as fp:
         json.dump(corona_evals_by_country, fp, cls=NumpyEncoder)
 
+    # get a count of the symptoms
+    symptoms_ls = ['fever', 'sorethroat', 'runnynose', 'cough', 'losssmell', 'losstaste', 'shortnessbreath',
+                   'headace', 'musclepain', 'diarrhea']
+    symptoms_count = dict(df.loc[:, symptoms_ls].sum())
+    # Save to json
+    with open(f'../../www/json/cc/symptoms_count.json', 'w') as fp:
+        json.dump(symptoms_count, fp, cls=NumpyEncoder)
+
 if __name__ == '__main__':
     main()
