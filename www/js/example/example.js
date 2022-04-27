@@ -71,24 +71,6 @@ window.onload = getJSON(json_data_url, function(err, json_data) {
 // Basic Chart.js example [END]
 // ================================================================
 
-new Chart(document.getElementById("livingRoomCornerChart"), {
-  type: 'pie',
-  data: {
-    labels: ["Left Wall", "Floor", "Right Wall"],
-    datasets: [{
-      label: "Population (millions)",
-      backgroundColor: ["#BBBBBB", "#3B2929","#878787"],
-      data: [35, 35, 30]
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: 'A graphical visualisation of a living room corner as pie chart.'
-    }
-  }
-});
-
 // ================================================================
 // Living Room Corner Chart [START]
 // ================================================================
@@ -96,9 +78,9 @@ new Chart(document.getElementById("livingRoomCornerChart"), {
 new Chart(document.getElementById("livingRoomCornerChart"), {
   type: 'pie',
   data: {
-    labels: ["Left Wall", "Floor", "Right Wall"],
+    labels: ["Right Wall", "Floor", "Left Wall"],
     datasets: [{
-      label: "Population (millions)",
+      label: "",
       backgroundColor: ["#BBBBBB", "#3B2929","#878787"],
       data: [35, 35, 30]
     }]
