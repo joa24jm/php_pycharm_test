@@ -335,3 +335,86 @@ window.onload = getJSON(json_data_url_3, function(err, json_data) {
 // ================================================================
 // Living Room Corner Chart [END]
 // ================================================================
+
+// ================================================================
+// Stacked Bar Chart Education [START]
+// ================================================================
+
+function initStackedBarChartEdu(object) {
+    // Deep copy the data object, as it is mutuated e.g. by shift().
+    const csvObject = JSON.parse(JSON.stringify(object));
+    console.log(csvObject)
+    const labels = csvObject.data
+        .map(elementData => elementData.shift());
+
+    const colorScaleMin = 0;
+    const colorScaleMax = csvObject.header.length;
+    csvObject.header.shift();
+    const datasets = csvObject.header
+        .map((headerString, index) => {
+            return {
+                label: headerString,
+                data: csvObject.data.map((elementRow) => elementRow[index]),
+                backgroundColor: getChromaticScaleColor(index, {minValue: colorScaleMin, maxValue: colorScaleMax})
+            };
+        });
+
+    const stackedBarChartData = {
+        labels,
+        datasets
+    };
+
+    const config = {
+        type: 'bar',
+        data: stackedBarChartData,
+        options: {
+            plugins: {},
+            responsive: true,
+            scales: {
+                y: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Ratio 100%'
+                    }
+                },
+                x: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Countries'
+                    }
+                }
+            },
+            animations: {
+                y: {
+                    easing: 'easeInOutElastic',
+                    from: (ctx) => {
+                        if (ctx.type === 'data') {
+                            if (ctx.mode === 'default' && !ctx.dropped) {
+                                ctx.dropped = true;
+                                return 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(
+        document.getElementById('stacked_bar_education'),
+        config
+    );
+}
+
+const stackedBarCartJSONEdu = '../../json/cc/edu_by_country.csv';
+window.onload = getFileContent(stackedBarCartJSONEdu, false)
+    .then((csvString) => {
+        const csvObject = csvToObject(csvString);
+        initStackedBarChartEdu(csvObject);
+    });
+
+// ================================================================
+// Stacked Bar Chart Education [END]
+// ================================================================

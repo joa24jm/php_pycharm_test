@@ -80,8 +80,11 @@ def main():
     # normalize values to 100 %
     for col in edu_by_country.columns:
         edu_by_country[col] = edu_by_country[col] / edu_by_country[col].sum()
+
+    # transpose for javascript
+    edu_by_country = edu_by_country.transpose()
     # save to csv
-    edu_by_country.to_csv('../../../www/json/cc/edu_by_country.csv', index_label='education')
+    edu_by_country.to_csv('../../../www/json/cc/edu_by_country.csv', index_label='country')
 
 
 if __name__ == '__main__':
