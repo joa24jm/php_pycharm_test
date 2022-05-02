@@ -143,8 +143,9 @@ if __name__ == '__main__':
     # # get questionnaires table
     # qs = tabs['questionnaires']
 
-
-
+    # TODO: use this for locally importing the data from .csv
+    # import pandas as pd
+    # pd.read_csv('path-to-local-csv')
 
     # get ALL dataframes from the ch database (This takes a while)
     # Parent, Children, Heart, Compass,

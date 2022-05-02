@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.path.join(sys.path[0], '..', '..', '..'))
+
 from datetime import date
 from pathlib import Path
 from src.utils.tyt import tables
@@ -12,7 +15,7 @@ if __name__ == '__main__':
 
   # save dataframe to dir
   tday = date.today().strftime("%y-%m-%d")
-  tday = "22-01-17" # database is just a view from that date
+  # tday = "22-01-17" # database is just a view from that date
 
   # write date to CSV file
   path = '../../../results/dataframes/tyt'

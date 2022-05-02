@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.path.join(sys.path[0], '..', '..', '..'))
+
 __author__ = 'CV'
 __copyright__ = 'Copyright 2022, Dashboard Project'
 __credits__ = ['CV', 'JA']
